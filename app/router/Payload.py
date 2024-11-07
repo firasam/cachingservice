@@ -19,7 +19,6 @@ router = APIRouter(prefix="/payload", tags=["Payload"])
 def create(cache_input : PayloadInput, cache = Depends(get_redis), db : Session = Depends(get_db)):
     cache_key = key(cache_input.list1,cache_input.list2)
     in_cache = cache.get(cache_key)
-
     if not in_cache:
         string_transform = transform(cache_input.list1,cache_input.list2)
         newPayload = Payload()
@@ -31,6 +30,6 @@ def create(cache_input : PayloadInput, cache = Depends(get_redis), db : Session 
     return PayloadId(id = in_cache)
 
 @router.get('/{id}', status_code= HTTP_200_OK, response_model= PayloadOutput)
-def create(id: uuid.UUID, db : Session = Depends(get_db)):
+def get(id: uuid.UUID, db : Session = Depends(get_db)):
     payload = db.query(Payload).filter(Payload.id == id).first()
     return payload

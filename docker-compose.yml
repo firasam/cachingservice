@@ -9,7 +9,7 @@ services:
     volumes:
       - ./:/code:ro
     environment:
-      - DATABASE_URL=postgresql://postgres:alpino123@db:5432/payload
+      - DATABASE_URL=postgresql://postgres:alpino123@db:5433/payload
     ports:
       - "8000:8000"
 
@@ -18,11 +18,12 @@ services:
       volumes:
         - postgres_data:/var/lib/postgresql/data
       ports:
-        - "5432:5433"
+        - "5433:5433"
       environment:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=alpino123
         - POSTGRES_DB=payload
+        - PGPORT= 5433
       healthcheck:
         test: "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER"
         interval: 2s
