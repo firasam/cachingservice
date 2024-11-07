@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/code:ro
+    environment:
+      - DATABASE_URL=postgresql://postgres:alpino123@db:5432/payload
+    ports:
+      - "8000:8000"
+
+  db:
+      image: postgres:17
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      ports:
+        - "5432:5433"
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=alpino123
+        - POSTGRES_DB=payload
+      healthcheck:
+        test: "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER"
+        interval: 2s
+        timeout: 5s
+        retries: 10
+  redis:
+    image: "redis:alpine"
+
+volumes:
+      postgres_data:
